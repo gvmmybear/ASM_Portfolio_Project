@@ -1,10 +1,10 @@
-TITLE String Primitives & MACROS     (Proj6_CASTROCH.asm)
+TITLE Low Level I/O Using String Primitives & MACROS     (Project_6.asm)
 
 ; Author: Christian Castro
-; Last Modified: 12/05/2021
-; OSU email address: CASTROCH@oregonstate.edu
-; Course number/section:   CS271 Section 400
-; Project Number: 6                Due Date: 12/05/2021
+; Last Modified: 01/09/2022
+; Email address: chj.castro@gmail.com
+; Course number:  Oregon State University - CS271 Computer Architecture and Assembly Language
+; Project Number: 6                
 ; Description: This program takes user input for 10 signed integers. Once the 
 ;		user enters these numbers as a string, these string values are converted
 ;		to numeric form and stored in an array in memory. Using these newly
@@ -43,18 +43,18 @@ mGetString  MACRO prompt, output, count, bytesRead
 
 ; Prints prompt message, then using ReadString, stores user input 
 ; to array in memory.
-	MOV		EDX, prompt
+	MOV	EDX, prompt
 	CALL	WriteString
-	MOV		ECX, count
-	MOV		EDX, output
+	MOV	ECX, count
+	MOV	EDX, output
 	CALL	ReadString
-	MOV		EDI, bytesRead
-	MOV		[EDI], EAX
+	MOV	EDI, bytesRead
+	MOV	[EDI], EAX
 
 ; Restores register values
-	POP		EDI
-	POP		EDX
-	POP		ECX
+	POP	EDI
+	POP	EDX
+	POP	ECX
 ENDM	
 
 ; MACRO DEFINITIONS CONT.
@@ -80,23 +80,23 @@ mDisplayString MACRO msg, string
 
 ; Prints display message before printing string.
 	CALL	CrLf
-	MOV		EDX, msg
+	MOV	EDX, msg
 	CALL	WriteString
-	MOV		ESI, string
+	MOV	ESI, string
 	CLD
 
 ; Iterates through array and prints each char using WriteChar.
 _printNums:
 	LODSB
-	CMP		AL, NULL
-	JE		_end
+	CMP	AL, NULL
+	JE	_end
 	CALL	WriteChar
-	JMP		_printNums
+	JMP	_printNums
 _end:
 	CALL	CrLf
 
 ; Restores registers
-	POP		ESI
+	POP	ESI
 	POPAD
 ENDM
 
@@ -119,10 +119,10 @@ NULL = 00h
 ; VARIABLE DEFINITIONS
 ; ====================
 intro1		BYTE	"Project 6: String Primitives and Macros",0Ah,
-					"Author: Christian Castro",0Ah,0
+			"Author: Christian Castro",0Ah,0
 intro2		BYTE	"Please enter 10 signed integers. Their total sum must be within the range of",0Ah,
-					"-2,147,483,648 and 2,147,483,647. Once all 10 integers have been entered,",0Ah, 
-					"they will be displayed as a list, along with their sum and truncated average.",0Ah,0
+			"-2,147,483,648 and 2,147,483,647. Once all 10 integers have been entered,",0Ah, 
+			"they will be displayed as a list, along with their sum and truncated average.",0Ah,0
 prompt1		BYTE	"Please enter a signed integer: ",0
 error		BYTE	"Error! You did not enter a signed integer or your value was either too large or too small.",0
 listMsg		BYTE	"Here are the numbers you entered:",0Ah,0
@@ -151,17 +151,17 @@ main PROC
 ;	values, then stores in memory.
 ; ---------------------------------------
 	PUSH	ECX
-	MOV		ECX, MAX_NUM
+	MOV	ECX, MAX_NUM
 _dataEntry:
 	PUSH	OFFSET numsOut		; ebp+28
 	PUSH	OFFSET error		; ebp+24
 	PUSH	OFFSET prompt1		; ebp+20
 	PUSH	OFFSET numsIn		; ebp+16
-	PUSH	MAX_NUM				; ebp+12
+	PUSH	MAX_NUM			; ebp+12
 	PUSH	OFFSET numOfBytes	; ebp+8
 	CALL	ReadVal
 	LOOP	_dataEntry
-	POP		ECX
+	POP	ECX
 	; ...
 
 ; --------------------------------------------------------
@@ -173,10 +173,10 @@ _dataEntry:
 	PUSH	OFFSET listMsg		; ebp+40
 	PUSH	OFFSET sumMsg		; ebp+36
 	PUSH	OFFSET aveMsg		; ebp+32
-	PUSH	OFFSET sign			; ebp+28
+	PUSH	OFFSET sign		; ebp+28
 	PUSH	OFFSET strNums		; ebp+24
 	PUSH	OFFSET numsIn		; ebp+20
-	PUSH	OFFSET sum			; ebp+16
+	PUSH	OFFSET sum		; ebp+16
 	PUSH	OFFSET average		; ebp+12
 	PUSH	OFFSET numsOut		; ebp+8
 	CALL	WriteVal
@@ -213,21 +213,21 @@ introduction PROC
 
 ; Saves edx reg/sets base pointer
 	PUSH	EBP
-	MOV		EBP, ESP
+	MOV	EBP, ESP
 	PUSH	EDX
 
 ; Displays intro1, then intro2 (program title/author/description)
-	MOV		EDX, [EBP + 12]
+	MOV	EDX, [EBP + 12]
 	CALL	WriteString
 	CALL	CrLf
-	MOV		EDX, [EBP + 8]
+	MOV	EDX, [EBP + 8]
 	CALL	WriteString
 	CALL	CrLf
 
 ; Restores reg
-	POP		EDX
-	POP		EBP
-	RET		8
+	POP	EDX
+	POP	EBP
+	RET	8
 introduction ENDP
 
 ; ---------------------------------------------------------------------------------
@@ -256,7 +256,7 @@ ReadVal PROC
 ; ...
 ; Saves ecx/edx reg (ecx used for count in main)/sets base pointer
 	PUSH	EBP
-	MOV		EBP, ESP
+	MOV	EBP, ESP
 	PUSH	ECX
 	PUSH	EDX
 
@@ -266,8 +266,8 @@ ReadVal PROC
 
 ; Validates that the user has not entered 9 or more digits.
 ;	(EAX should hold the number of char entered from mGetString)
-	CMP		EAX, MAX_NUM - 1
-	JGE		_error
+	CMP	EAX, MAX_NUM - 1
+	JGE	_error
 
 ; ----------------------
 ; ESI points to beginning of OFFSET of numsIn on each iteration
@@ -276,10 +276,10 @@ ReadVal PROC
 ;	destination array numsOut where each number is stored as
 ;	an SDWORD.
 ; ----------------------
-	CMP		ECX, MAX_NUM
-	MOV		ESI, [EBP+16]
-	JL		_skipPoint
-	MOV		EDI, [EBP+28]
+	CMP	ECX, MAX_NUM
+	MOV	ESI, [EBP+16]
+	JL	_skipPoint
+	MOV	EDI, [EBP+28]
 _skipPoint:
 	; ...
 
@@ -290,14 +290,14 @@ _skipPoint:
 ;	as well, then we move the number of digits entered to ecx 
 ;	for a processing loop found in the subprocedures below.
 ; ----------------------
-	MOV		ECX, EAX
-	XOR		EBX, EBX
+	MOV	ECX, EAX
+	XOR	EBX, EBX
 	CLD
 	LODSB
-	CMP		AL, minusSign
-	JE		_negativeConvert
-	CMP		AL, plusSign
-	JE		_positiveConvert
+	CMP	AL, minusSign
+	JE	_negativeConvert
+	CMP	AL, plusSign
+	JE	_positiveConvert
 	; ...
 
 ; ----------------------
@@ -309,11 +309,11 @@ _skipPoint:
 ;	would have jumped this check for the subsequant char "2" but
 ;	it still must be validated. 
 ; ----------------------
-	CMP		AL, 30h		; 30h ascii hex code for char "0"
-	JL		_error
-	CMP		AL, 39h		; 39h ascii hex code for char "9"
-	JG		_error
-	JMP		_skipDecrement
+	CMP	AL, 30h		; 30h ascii hex code for char "0"
+	JL	_error
+	CMP	AL, 39h		; 39h ascii hex code for char "9"
+	JG	_error
+	JMP	_skipDecrement
 	; ...
 
 ; ----------------------
@@ -322,17 +322,17 @@ _skipPoint:
 ;	to a positive signed integer. 
 ; ----------------------
 _positiveConvert:
-	DEC		ECX		; If we've jumped to this point, we don't count "+" as a digit.
+	DEC	ECX		; If we've jumped to this point, we don't count "+" as a digit.
 	LODSB			; Loads the second digit in string seq for analysis.
 _skipDecrement:
 	CALL	positiveIntConvert
-	JMP		_skipNeg
+	JMP	_skipNeg
 	; ...
 
 ; If the first char entered is "-", then we jump to this point to
 ;	finish converting the string to a negative signed integer. 
 _negativeConvert:
-	DEC		ECX
+	DEC	ECX
 	LODSB
 	CALL	negativeIntConvert
 _skipNeg:
@@ -346,26 +346,26 @@ _skipNeg:
 ;	premature termination of the loop would mean we have 
 ;	encountered an invalid char, so we jump to print the error. 
 ; ----------------------
-	CMP		ECX, 0		; checks for premature loop termination
-	JNE		_error
+	CMP	ECX, 0		; checks for premature loop termination
+	JNE	_error
 	; ...
-	POP		EDX
-	POP		ECX
+	POP	EDX
+	POP	ECX
 _finish:
-	POP		EBP
-	RET		20
+	POP	EBP
+	RET	20
 	
 ; Dispalys error message if user has entered an invalid char or
 ;	a number that is either too large or too small.
 _error:
 	CALL	CrLf
-	MOV		EDX, [EBP+24]
+	MOV	EDX, [EBP+24]
 	CALL	WriteString
 	CALL	CrLf
-	POP		EDX
-	POP		ECX
-	INC		ECX		; increments ecx so the loop in main does not count char as valid.
-	JMP		_finish
+	POP	EDX
+	POP	ECX
+	INC	ECX		; increments ecx so the loop in main does not count char as valid.
+	JMP	_finish
 ReadVal ENDP
 
 ; ---------------------------------------------------------------------------------
@@ -395,29 +395,29 @@ positiveIntConvert PROC
 ;	we jump into the middle of the loop below, after the point where
 ;	we would inc ESI by LODSB to get the next char in the sequence.
 ; ----------------------
-	JMP		_continueLoop
+	JMP	_continueLoop
 	; ...
 _finishLoop:
 	LODSB
 
 ; Validation check for ascii hex codes 30h-39h which are char "0" through "9"
 _continueLoop:
-	CMP		AL, 30h
-	JL		_sendError
-	CMP		AL, 39h
-	JG		_sendError
+	CMP	AL, 30h
+	JL	_sendError
+	CMP	AL, 39h
+	JG	_sendError
 
 ; converts to positive Int by numInt = 10*numInt + (numChar-48)
-	SUB		AL, 30h
+	SUB	AL, 30h
 	PUSH	ECX
-	MOV		ECX, 10
+	MOV	ECX, 10
 	IMUL	EBX, ECX
-	ADD		EBX, EAX
-	POP		ECX
+	ADD	EBX, EAX
+	POP	ECX
 	LOOP	_finishLoop
 
 ; Stores the converted signed Int as an SDWORD
-	MOV		EAX, EBX
+	MOV	EAX, EBX
 	STOSD
 _sendError:
 	RET
@@ -450,22 +450,22 @@ negativeIntConvert PROC
 ;	we jump into the middle of the loop below, after the point where
 ;	we would inc ESI by LODSB to get the next char in the sequence.
 ; ----------------------
-	JMP		_continueLoop
+	JMP	_continueLoop
 	; ...
 _finishLoop:
 	LODSB
 
 ; Validation check for ascii hex codes 30h-39h which are char "0" through "9"
 _continueLoop:
-	CMP		AL, 30h
-	JL		_sendError
-	CMP		AL, 39h
-	JG		_sendError
+	CMP	AL, 30h
+	JL	_sendError
+	CMP	AL, 39h
+	JG	_sendError
 	
 ; converts to negative Int by numInt = 10*numInt + (numChar-48)
-	SUB		AL, 30h
+	SUB	AL, 30h
 	PUSH	ECX
-	MOV		ECX, 10
+	MOV	ECX, 10
 	IMUL	EBX, ECX
 
 ; ----------------------
@@ -475,13 +475,13 @@ _continueLoop:
 ;	broken up into their own separate procs, as this seems to currently
 ;	be working. 
 ; ----------------------
-	SUB		EBX, EAX	
+	SUB	EBX, EAX	
 	; ...
-	POP		ECX
+	POP	ECX
 	LOOP	_finishLoop
 
 ; Stores the converted signed Int as an SDWORD
-	MOV		EAX, EBX
+	MOV	EAX, EBX
 	STOSD
 _sendError:
 	RET
@@ -526,13 +526,13 @@ WriteVal PROC
 ; ...
 ; Sets/saves base pointer
 	PUSH	EBP
-	MOV		EBP, ESP
+	MOV	EBP, ESP
 	
 ; Sum and average are calculated using the subproc averageAndSum
-	MOV		EBX, [EBP+16]	; sum
-	MOV		ECX, MAX_NUM
-	MOV		EDX, [EBP+12]	; average
-	MOV		ESI, [EBP+8]	; numsOut array
+	MOV	EBX, [EBP+16]	; sum
+	MOV	ECX, MAX_NUM
+	MOV	EDX, [EBP+12]	; average
+	MOV	ESI, [EBP+8]	; numsOut array
 	CALL	averageAndSum
 
 ; ----------------------
@@ -541,23 +541,23 @@ WriteVal PROC
 ;	SDWORD values that are stored in numsOut by the loop
 ;	below
 ; ----------------------
-	MOV		ESI, [EBP+8]
-	MOV		EDI, [EBP+20]	; numsIn
-	MOV		ECX, MAX_NUM
+	MOV	ESI, [EBP+8]
+	MOV	EDI, [EBP+20]	; numsIn
+	MOV	ECX, MAX_NUM
 _convertToStr:
 	; ...
-	MOV		EDI, [EBP+20]
+	MOV	EDI, [EBP+20]
 	PUSH	ECX
-	XOR		ECX, ECX
-	MOV		EBX, 1
+	XOR	ECX, ECX
+	MOV	EBX, 1
 
 ; Here we check to see whether the stored SDWORD is a negative
 ;	or positive integer by used of the sign flag. 
 	CLD
 	LODSD
 	IMUL	EAX, EBX
-	JNS		_convertFromPositive
-	MOV		EBX, EAX
+	JNS	_convertFromPositive
+	MOV	EBX, EAX
 
 ; ----------------------
 ; If the value being analyzed is a negative int, then using
@@ -570,11 +570,11 @@ _convertToStr:
 ; ----------------------
 	PUSH	EAX
 	PUSH	EDI
-	MOV		EAX, 1
-	MOV		EDI, [EBP+28]		; sets sign variable 
-	MOV		[EDI], EAX
-	POP		EDI
-	POP		EAX
+	MOV	EAX, 1
+	MOV	EDI, [EBP+28]		; sets sign variable 
+	MOV	[EDI], EAX
+	POP	EDI
+	POP	EAX
 	; ...
 
 ; ----------------------
@@ -583,9 +583,9 @@ _convertToStr:
 ;	This gets us the opposite positive value so we can finish
 ;	converting it into string characters. 
 ; ----------------------
-	MOV		EAX, EBX
-	SUB		EAX, EBX
-	SUB		EAX, EBX
+	MOV	EAX, EBX
+	SUB	EAX, EBX
+	SUB	EAX, EBX
 	; ...
 
 ; ----------------------
@@ -602,35 +602,35 @@ _convertToStr:
 ;	as a way to know when to terminate the loop below, as different number values
 ;	will have different numbers of digits.
 ; ----------------------
-	INC		ECX
+	INC	ECX
 _convertFromPositive:
-	MOV		EBX, 10
-	XOR		EDX, EDX
-	DIV		EBX
+	MOV	EBX, 10
+	XOR	EDX, EDX
+	DIV	EBX
 	PUSH	EAX		; saves quotient 
-	MOV		EAX, EDX
-	ADD		EAX, 30h
+	MOV	EAX, EDX
+	ADD	EAX, 30h
 	STOSB
-	POP		EAX		
-	INC		ECX		; we need to store a count for number of digits 
-	CMP		EAX, 0	 ; checks quotient for end point.
-	JNE		_convertFromPositive
+	POP	EAX		
+	INC	ECX		; we need to store a count for number of digits 
+	CMP	EAX, 0	 ; checks quotient for end point.
+	JNE	_convertFromPositive
 	; ...
 
 ; Below, this block of code then checks the "sign" variable to
 ;	determine if the last character to be appended is a "-" sign.
 	PUSH	EAX
 	PUSH	EDI
-	MOV		EDI, [EBP+28]
-	MOV		EAX, 0
-	CMP		[EDI], EAX
-	MOV		[EDI], EAX
-	POP		EDI
-	JE		_skipNegSign
-	MOV		EAX, minusSign
+	MOV	EDI, [EBP+28]
+	MOV	EAX, 0
+	CMP	[EDI], EAX
+	MOV	[EDI], EAX
+	POP	EDI
+	JE	_skipNegSign
+	MOV	EAX, minusSign
 	STOSB
 _skipNegSign:
-	POP		EAX
+	POP	EAX
 
 ; ----------------------
 ; Now using numsIn (where the newly converted int to string should currently
@@ -646,11 +646,11 @@ _skipNegSign:
 ;	numbers in the correctly entered order.
 ; ----------------------
 	PUSH	ESI
-	MOV		ESI, EDI
-	MOV		EDI, [EBP+24]		; strNums array
-	MOV		EAX, 2
-	ADD		EAX, ECX
-	ADD		[EBP+24], EAX
+	MOV	ESI, EDI
+	MOV	EDI, [EBP+24]		; strNums array
+	MOV	EAX, 2
+	ADD	EAX, ECX
+	ADD	[EBP+24], EAX
 
 ; Sets direction flag so we can append in the correct order in strNums array.
 	STD
@@ -662,10 +662,10 @@ _appendToOutput:
 	STOSB
 	LOOP	_appendToOutput
 	; ...
-	POP		ESI
-	POP		ECX
-	CMP		ECX, 1
-	JE		_end	; skips the placement of a comma/space if it's the last num.
+	POP	ESI
+	POP	ECX
+	CMP	ECX, 1
+	JE	_end	; skips the placement of a comma/space if it's the last num.
 
 ; ----------------------
 ; After reversing the order of characters in a number and storing them to
@@ -673,17 +673,17 @@ _appendToOutput:
 ;	the end, so when the final print is executed, we have a printed "list"
 ;	of the numbers entered.
 ; ----------------------
-	MOV		EAX, COMMA
+	MOV	EAX, COMMA
 	STOSB
-	MOV		EAX, SPACE
+	MOV	EAX, SPACE
 	STOSB
 _end:
 	; ...
 
 ; Loops back to the outter loop to get the next number stored as an SDWORD.
-	DEC		ECX
-	CMP		ECX, 0
-	JG		_convertToStr
+	DEC	ECX
+	CMP	ECX, 0
+	JG	_convertToStr
 	
 ; ----------------------
 ; NOTE: I was running into some stack alignment issues but eventually I
@@ -694,20 +694,20 @@ _end:
 ;	the code cluster in this procedure. :(
 ; ----------------------
 ; converts the sum from signed int to string.
-	MOV		EBX, [EBP+28]
+	MOV	EBX, [EBP+28]
 	PUSH	EBX				; sign		ebp+16
-	MOV		EBX, [EBP+20]
+	MOV	EBX, [EBP+20]
 	PUSH	EBX				; numsIn	ebp+12
-	MOV		EBX, [EBP+16]
+	MOV	EBX, [EBP+16]
 	PUSH	EBX				; sum		ebp+8
 	CALL	ConvertAverageSum	
 
 ; converts the average from signed int to string.
-	MOV		EBX, [EBP+28]
+	MOV	EBX, [EBP+28]
 	PUSH	EBX				; sign		ebp+16
-	MOV		EBX, [EBP+20]
+	MOV	EBX, [EBP+20]
 	PUSH	EBX				; numsIn	ebp+12
-	MOV		EBX, [EBP+12]
+	MOV	EBX, [EBP+12]
 	PUSH	EBX				; average	ebp+8
 	CALL	ConvertAverageSum
 	; ...
@@ -717,8 +717,8 @@ _end:
 	mDisplayString [EBP+40], [EBP+44]		; prints the user entered list of nums
 	mDisplayString [EBP+36], [EBP+16]		; prints the sum
 	mDisplayString [EBP+32], [EBP+12]		; prints the truncated average
-	POP		EBP
-	RET		36
+	POP	EBP
+	RET	36
 WriteVal ENDP
 
 ; ---------------------------------------------------------------------------------
@@ -750,7 +750,7 @@ averageAndSum PROC
 ; ...
 ; Saves registers and sets base pointer
 	PUSH	EBP
-	MOV		EBP, ESP
+	MOV	EBP, ESP
 	PUSH	EAX
 	PUSH	EBX
 	PUSH	EDX
@@ -763,42 +763,42 @@ _sumElements:
 	LODSD
 	PUSH	EBX
 	PUSH	EDX
-	MOV		EBX, 1
-	XOR		EDX, EDX
+	MOV	EBX, 1
+	XOR	EDX, EDX
 	IMUL	EAX, EBX
-	POP		EDX
-	POP		EBX
-	JS		_sub
-	ADD		[EBX], EAX
-	JMP		_add
+	POP	EDX
+	POP	EBX
+	JS	_sub
+	ADD	[EBX], EAX
+	JMP	_add
 _sub:
 	PUSH	EBX
 	PUSH	EAX
-	MOV		EAX, [EBX]
-	POP		EBX			; pops old eax value into ebx
-	ADD		EAX, EBX
-	POP		EBX
-	MOV		[EBX], EAX
+	MOV	EAX, [EBX]
+	POP	EBX			; pops old eax value into ebx
+	ADD	EAX, EBX
+	POP	EBX
+	MOV	[EBX], EAX
 _add:
 	LOOP	_sumElements
 
 ; Calculates and stores the truncated average by taking the calculated 
 ;	sum and div by MAX_NUM=10.
-	MOV		EAX, [EBX]
-	POP		ECX
-	MOV		EDI, EDX
-	XOR		EDX, EDX
-	MOV		EBX, MAX_NUM
+	MOV	EAX, [EBX]
+	POP	ECX
+	MOV	EDI, EDX
+	XOR	EDX, EDX
+	MOV	EBX, MAX_NUM
 	CDQ
 	IDIV	EBX
 	STOSD
 
 ; Restores registers
-	POP		EDI
-	POP		EDX
-	POP		EBX
-	POP		EAX
-	POP		EBP
+	POP	EDI
+	POP	EDX
+	POP	EBX
+	POP	EAX
+	POP	EBP
 	RET
 averageAndSum ENDP
 
@@ -829,33 +829,33 @@ ConvertAverageSum PROC
 ; ...
 ; Saves reg and sets base pointer
 	PUSH	EBP
-	MOV		EBP, ESP
+	MOV	EBP, ESP
 	PUSH	ECX
 
 ; Checks if the average/sum is a negative value by the sign flag.
-	XOR		ECX, ECX
-	MOV		ESI, [EBP+8]		; sum		ebp+8
-	MOV		EDI, [EBP+12]		; numsIn	ebp+12
+	XOR	ECX, ECX
+	MOV	ESI, [EBP+8]		; sum		ebp+8
+	MOV	EDI, [EBP+12]		; numsIn	ebp+12
 	LODSD
-	MOV		EBX, 1
+	MOV	EBX, 1
 	IMUL	EBX
-	JNS		_positiveValueConvert
-	INC		ECX
-	MOV		EBX, EAX
+	JNS	_positiveValueConvert
+	INC	ECX
+	MOV	EBX, EAX
 
 ; Saves sign variable as 1 if average is a negative integer.
 	PUSH	EAX
 	PUSH	EDI
-	MOV		EAX, 1
-	MOV		EDI, [EBP+16]		; sets sign variable 
-	MOV		[EDI], EAX
-	POP		EDI
-	POP		EAX
+	MOV	EAX, 1
+	MOV	EDI, [EBP+16]		; sets sign variable 
+	MOV	[EDI], EAX
+	POP	EDI
+	POP	EAX
 
 ; Converts negative integer to its 2's complement 
-	MOV		EAX, EBX
-	SUB		EAX, EBX
-	SUB		EAX, EBX
+	MOV	EAX, EBX
+	SUB	EAX, EBX
+	SUB	EAX, EBX
 
 ; ----------------------
 ; Converts integer digits to string values coresponding to the ascii hex
@@ -865,33 +865,33 @@ ConvertAverageSum PROC
 ;	hex code chars and a more detailed description of the algorithm. (Line 585)
 ; ----------------------
 _positiveValueConvert:
-	MOV		EBX, 10
-	XOR		EDX, EDX
-	DIV		EBX
+	MOV	EBX, 10
+	XOR	EDX, EDX
+	DIV	EBX
 	PUSH	EAX		; saves quotient 
-	MOV		EAX, EDX
-	ADD		EAX, 30h
+	MOV	EAX, EDX
+	ADD	EAX, 30h
 	STOSB
-	POP		EAX
-	INC		ECX
-	CMP		EAX, 0
-	JNE		_positiveValueConvert
+	POP	EAX
+	INC	ECX
+	CMP	EAX, 0
+	JNE	_positiveValueConvert
 	; ...
 
 ; Appends "-" sign if the average is a negative value after 
 ;	checking the value of the sign variable.
 	PUSH	EAX
 	PUSH	EDI
-	MOV		EDI, [EBP+16]
-	MOV		EAX, 0
-	CMP		[EDI], EAX		; sign=0 or sign=1?
-	MOV		[EDI], EAX
-	POP		EDI
-	JE		_skipNegSum
-	MOV		EAX, minusSign
+	MOV	EDI, [EBP+16]
+	MOV	EAX, 0
+	CMP	[EDI], EAX		; sign=0 or sign=1?
+	MOV	[EDI], EAX
+	POP	EDI
+	JE	_skipNegSum
+	MOV	EAX, minusSign
 	STOSB
 _skipNegSum:
-	POP		EAX
+	POP	EAX
 	
 ; ----------------------
 ; Similarly to the conversions for the array elements, we use numsIn
@@ -901,8 +901,8 @@ _skipNegSum:
 ;	destination pointer to the array that holds the integer values
 ;	for the sum or average.
 ; ----------------------
-	MOV		ESI, EDI
-	MOV		EDI, [EBP+8]
+	MOV	ESI, EDI
+	MOV	EDI, [EBP+8]
 	STD
 	LODSB
 _reverseInPlace:
@@ -911,13 +911,13 @@ _reverseInPlace:
 	CLD
 	STOSB
 	LOOP	_reverseInPlace
-	XOR		EAX, EAX
+	XOR	EAX, EAX
 	STOSB
 	; ...
 
-	POP		ECX
-	POP		EBP
-	RET		12
+	POP	ECX
+	POP	EBP
+	RET	12
 ConvertAverageSum ENDP
 
 ; ---------------------------------------------------------------------------------
@@ -936,19 +936,19 @@ ConvertAverageSum ENDP
 goodbye PROC
 ; Saves reg/sets base pointer
 	PUSH	EBP
-	MOV		EBP, ESP
+	MOV	EBP, ESP
 	PUSHAD
 
 ; Display goodbye message
 	CALL	CrLf
-	MOV		EDX, [EBP+8]
+	MOV	EDX, [EBP+8]
 	CALL	WriteString
 	CALL	CrLf
 
 ; Restores reg
 	POPAD
-	POP		EBP
-	RET		4
+	POP	EBP
+	RET	4
 goodbye ENDP
 
 END main
