@@ -364,7 +364,7 @@ _error:
 	CALL	CrLf
 	POP	EDX
 	POP	ECX
-	INC	ECX		; increments ecx so the loop in main does not count char as valid.
+	INC	ECX		; increments ecx so the loop in main does not count input as valid.
 	JMP	_finish
 ReadVal ENDP
 
@@ -472,8 +472,7 @@ _continueLoop:
 ; Right here is the only difference between the two conversion subprocs.
 ;	instead of adding EBX, EAX, it's subtracted. I'm sure these can both
 ;	be combined into just one proc, but due to time constraints, they were
-;	broken up into their own separate procs, as this seems to currently
-;	be working. 
+;	broken up into their own separate procs, as this seems to be working. 
 ; ----------------------
 	SUB	EBX, EAX	
 	; ...
@@ -685,14 +684,6 @@ _end:
 	CMP	ECX, 0
 	JG	_convertToStr
 	
-; ----------------------
-; NOTE: I was running into some stack alignment issues but eventually I
-;	think I was able to correct it. Before I was doing PUSH [EBP+xx]
-;	which I thought should be 4 bytes (because offset). I'm not even
-;	entirely sure that had been the issue, but because of time constraints
-;	I have decided to leave as is and just make of note explaining some of
-;	the code cluster in this procedure. :(
-; ----------------------
 ; converts the sum from signed int to string.
 	MOV	EBX, [EBP+28]
 	PUSH	EBX				; sign		ebp+16
